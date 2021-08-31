@@ -1,11 +1,8 @@
 export class ActionDispatcher implements IActionDispatcher {
-  public get messages() {
-    throw new Error('Not implemented');
-  }
+  public readonly messages: any[] = [];
 
   utterMessage(message: UtterMessage): void {
-    const messages = Object.keys(message);
-    throw new Error('Not implemented' + messages.join(', '));
+    this.messages.push(message);
   }
 }
 
@@ -32,5 +29,5 @@ export interface IActionDispatcher {
    */
   utterMessage(message: UtterMessage): void;
 
-  messages: any;
+  messages: any[];
 }

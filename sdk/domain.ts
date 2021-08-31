@@ -5,11 +5,11 @@ export class ActionDomain implements IActionDomain {
     //
   }
 
-  public get(key: keyof IAction['domain']) {
-    return this.payload[key];
+  public get() {
+    return this.payload;
   }
 }
 
 export interface IActionDomain {
-  get(key: keyof IAction['domain']): any;
+  get(): any;
 }

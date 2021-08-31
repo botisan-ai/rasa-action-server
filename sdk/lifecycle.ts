@@ -1,6 +1,7 @@
 import { MetadataStorage } from './metadata';
-import { ActionTracker } from './tracker';
 import { ActionDispatcher } from './dispatcher';
+import { ActionRejectedError } from './errors';
+import { ActionTracker } from './tracker';
 import { ActionDomain } from './domain';
 import { IAction } from './action';
 
@@ -10,7 +11,8 @@ import { IAction } from './action';
  * Stages:
  * - Receive Request
  * - Execute Action
- * - Collect Action Response
+ * - Collect Action Responses
+ * - Collect Action Events
  * - Send Response
  */
 export class Lifecycle {
@@ -23,9 +25,20 @@ export class Lifecycle {
     const _dispatcher = new ActionDispatcher();
     const _domain = new ActionDomain(domain);
 
-    // Execute side effects.
-    await action.run(_tracker, _dispatcher, _domain);
+    try {
+      // Execute side effects.
+      await action.run(_tracker, _dispatcher, _domain);
+      res.json(_dispatcher.messages);
+      //
+    } catch (e) {
+      if (e instanceof ActionRejectedError) {
+        return res.status(400).json({
+          error: e.message,
+          action_name: actionMetadata.name,
+        });
+      }
 
-    res.json(_dispatcher.messages);
+      return res.status(500).send(e);
+    }
   }
 }

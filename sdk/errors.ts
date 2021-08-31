@@ -9,3 +9,9 @@ export class ActionNotFoundError extends Error {
     super(`Action with name: ${name} is not found.`);
   }
 }
+
+export class ActionRejectedError extends Error {
+  constructor(readonly message: string) {
+    super(message);
+  }
+}

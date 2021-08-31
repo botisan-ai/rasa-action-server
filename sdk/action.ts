@@ -9,8 +9,8 @@ import { IActionDomain } from './domain';
  *
  * @category PublicAPI
  */
-export function Action(options: IActionOptions): Function {
-  return function (target: IConstructor<IRunnableAction>): void {
+export function Action(options: IActionOptions): (t: IConstructor<IRunnableAction>) => void {
+  return (target: IConstructor<IRunnableAction>): void => {
     MetadataStorage.addActionMetadata({
       target,
       name: options.name,
