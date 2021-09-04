@@ -1,0 +1,29 @@
+import { Controller, Get, Req, Res, Type } from '@nestjs/common';
+import { Request, Response } from 'express';
+import { ModuleRef } from '@nestjs/core';
+
+import { Lifecycle } from '../../sdk';
+
+/**
+ * Create controller with a dynamic path.
+ * @param path
+ */
+export function getControllerClass(path: string): Type {
+  @Controller()
+  class RasaActionServerController {
+    constructor(private readonly ref: ModuleRef) {
+      //
+    }
+
+    @Get([path])
+    async getSomething(@Req() req: Request, @Res() res: Response) {
+      const lc = new Lifecycle({
+        actionFactory: (target) => this.ref.get(target),
+      });
+
+      await lc.execute(req, res);
+    }
+  }
+
+  return RasaActionServerController;
+}

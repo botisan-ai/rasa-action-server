@@ -3,7 +3,8 @@ import { ActionDispatcher } from './dispatcher';
 import { ActionRejectedError } from './errors';
 import { ActionTracker } from './tracker';
 import { ActionDomain } from './domain';
-import { IAction } from './action';
+import { IAction, IRunnableAction } from './action';
+import { IConstructor } from './class';
 
 /**
  * Manages lifecycle of an action request.
@@ -16,10 +17,16 @@ import { IAction } from './action';
  * - Send Response
  */
 export class Lifecycle {
+  private readonly actionFactory?: (target: IConstructor<IRunnableAction>) => IRunnableAction;
+
+  constructor({ actionFactory }: ILifecycleOptions = {}) {
+    this.actionFactory = actionFactory;
+  }
+
   public async execute(req: { body: IAction }, res: any): Promise<void> {
     const { next_action, tracker, domain } = req.body;
     const actionMetadata = MetadataStorage.getMetadataByName(next_action);
-    const action = new actionMetadata.target();
+    const action = this.actionFactory ? this.actionFactory(actionMetadata.target) : new actionMetadata.target();
 
     const _tracker = new ActionTracker(tracker);
     const _dispatcher = new ActionDispatcher();
@@ -41,4 +48,8 @@ export class Lifecycle {
       return res.status(500).send(e);
     }
   }
+}
+
+export interface ILifecycleOptions {
+  actionFactory?: (target: IConstructor<IRunnableAction>) => IRunnableAction;
 }
