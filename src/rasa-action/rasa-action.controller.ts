@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res, Type } from '@nestjs/common';
+import { Controller, Post, Req, Res, Type } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ModuleRef } from '@nestjs/core';
 
@@ -15,7 +15,7 @@ export function getControllerClass(path: string): Type {
       //
     }
 
-    @Get([path])
+    @Post([path])
     async getSomething(@Req() req: Request, @Res() res: Response) {
       const lc = new Lifecycle({
         actionFactory: (target) => this.ref.get(target),

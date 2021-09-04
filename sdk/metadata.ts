@@ -14,6 +14,8 @@ class MetadataStorage_ {
     if (this._actions.has(meta.name)) {
       throw new ActionAlreadyExistError(meta.name);
     }
+
+    this._actions.set(meta.name, meta);
   }
 
   public getMetadataByName(name: string): IActionMetadata {
