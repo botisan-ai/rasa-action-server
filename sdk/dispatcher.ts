@@ -9,6 +9,7 @@ export class ActionDispatcher implements IActionDispatcher {
 /**
  * https://rasa.com/docs/action-server/sdk-dispatcher#parameters
  */
+// prettier-ignore
 export type UtterMessageType =
   | 'text'
   | 'image'

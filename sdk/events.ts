@@ -1,6 +1,6 @@
 import { IObjectLiteral } from './class';
 
-interface IEvent<T> {
+export interface IEvent<T> {
   data: T;
 }
 

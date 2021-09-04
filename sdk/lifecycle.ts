@@ -1,9 +1,9 @@
-import { MetadataStorage } from './metadata';
+import { IAction, IRunnableAction } from './action';
 import { ActionDispatcher } from './dispatcher';
 import { ActionRejectedError } from './errors';
+import { MetadataStorage } from './metadata';
 import { ActionTracker } from './tracker';
 import { ActionDomain } from './domain';
-import { IAction, IRunnableAction } from './action';
 import { IConstructor } from './class';
 
 /**
@@ -26,7 +26,11 @@ export class Lifecycle {
   public async execute(req: { body: IAction }, res: any): Promise<void> {
     const { next_action, tracker, domain } = req.body;
     const actionMetadata = MetadataStorage.getMetadataByName(next_action);
-    const action = this.actionFactory ? this.actionFactory(actionMetadata.target) : new actionMetadata.target();
+
+    // prettier-ignore
+    const action = this.actionFactory
+      ? this.actionFactory(actionMetadata.target)
+      : new actionMetadata.target();
 
     const _tracker = new ActionTracker(tracker);
     const _dispatcher = new ActionDispatcher();
