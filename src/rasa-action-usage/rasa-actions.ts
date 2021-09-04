@@ -1,6 +1,7 @@
 import { ModuleRef } from '@nestjs/core';
+
+import { Action } from '../rasa-action';
 import { IActionDispatcher, IActionDomain, IActionTracker, IEvent, IRunnableAction, events } from '../../sdk';
-import { Action } from '../rasa-action/rasa-action.decorators';
 
 @Action({ name: 'hello_action' })
 export class HelloAction implements IRunnableAction {
