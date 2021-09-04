@@ -38,8 +38,9 @@ export class Lifecycle {
 
     try {
       // Execute side effects.
-      await action.run(_tracker, _dispatcher, _domain);
-      res.json(_dispatcher.messages);
+      const events = (await action.run(_tracker, _dispatcher, _domain)) || [];
+      const responses = _dispatcher.messages;
+      res.status(200).json({ events, responses });
       //
     } catch (e) {
       if (e instanceof ActionRejectedError) {

@@ -16,7 +16,7 @@ export class SlotSet implements IEvent<ISlotSet> {
 export interface ISlotSet {
   key: string;
   value?: string;
-  timestamp?: string;
+  timestamp?: number;
 }
 
 /**
@@ -29,7 +29,7 @@ export class AllSlotsReset implements IEvent<IAllSlotsReset> {
 }
 
 export interface IAllSlotsReset {
-  timestamp: string;
+  timestamp: number;
 }
 
 /**
@@ -43,8 +43,8 @@ export class ReminderScheduled implements IEvent<IReminderScheduled> {
 
 export interface IReminderScheduled {
   name?: string;
-  intent_name: Text;
   timestamp: number;
+  intent_name: string;
   trigger_date_time: Date;
   kill_on_user_message: boolean;
   entities?: IObjectLiteral | IObjectLiteral<string>;
@@ -76,7 +76,7 @@ export class ConversationPaused implements IEvent<IConversationPaused> {
 }
 
 export interface IConversationPaused {
-  timestamp?: string;
+  timestamp?: number;
 }
 
 /**
@@ -89,7 +89,7 @@ export class ConversationResumed implements IEvent<IConversationResumed> {
 }
 
 export interface IConversationResumed {
-  timestamp?: string;
+  timestamp?: number;
 }
 
 /**
