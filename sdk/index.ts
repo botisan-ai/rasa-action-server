@@ -9,7 +9,7 @@ export {
   IActionExecuted,
   IBotUttered,
   IUserUttered,
-  ISessionRestarted,
+  ISessionStarted,
   IRestarted,
   IUserUtteranceReverted,
   IFollowupAction,
