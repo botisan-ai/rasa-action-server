@@ -3,7 +3,7 @@ import { IConstructor } from './class';
 import { IActionDispatcher } from './dispatcher';
 import { IActionTracker } from './tracker';
 import { IActionDomain } from './domain';
-import { IEvent } from './events';
+import { AllEventTypes, IEvent } from './events';
 
 /**
  * Class decorator to mark a class as a Rasa Action
@@ -30,7 +30,7 @@ export interface IActionOptions {
  * A runnable action definition.
  */
 export interface IRunnableAction {
-  run(tracker: IActionTracker, dispatcher: IActionDispatcher, domain: IActionDomain): Promise<IEvent<any>[] | void>;
+  run(tracker: IActionTracker, dispatcher: IActionDispatcher, domain: IActionDomain): Promise<AllEventTypes[] | void>;
 }
 
 export interface IAction {
@@ -45,7 +45,7 @@ export interface IAction {
     followup_action: null;
     latest_action_name: string;
     latest_input_channel: string;
-    events: [];
+    events: any[];
     active_loop: {
       //
     };
@@ -54,27 +54,27 @@ export interface IAction {
     };
     latest_message: {
       intent: {};
-      entities: [];
+      entities: any[];
       text: string;
       message_id: string;
       metadata: {};
-      intent_ranking: [];
+      intent_ranking: any[];
       response_selector: {};
     };
     slots: {
-      session_started_metadata: [];
+      session_started_metadata: any[];
     };
   };
 
   domain: {
     config: {};
     session_config: {};
-    intents: [];
-    entities: [];
+    intents: any[];
+    entities: any[];
     slots: {};
     responses: {};
-    actions: [];
+    actions: any[];
     forms: {};
-    e2e_actions: [];
+    e2e_actions: any[];
   };
 }

@@ -2,13 +2,14 @@ import { ModuleRef } from '@nestjs/core';
 
 import { Action } from '../rasa-action';
 import { IActionDispatcher, IActionDomain, IActionTracker, IEvent, IRunnableAction, events } from '../../sdk';
+import { AllEventTypes } from '../../sdk/events';
 
 @Action({ name: 'hello_action' })
 export class HelloAction implements IRunnableAction {
   // Inject module ref to prove Nest Dependency Injection works.
   constructor(private readonly ref: ModuleRef) {}
 
-  async run(tracker: IActionTracker, dispatcher: IActionDispatcher, domain: IActionDomain): Promise<IEvent<any>[] | void> {
+  async run(tracker: IActionTracker, dispatcher: IActionDispatcher, domain: IActionDomain): Promise<AllEventTypes[]> {
     console.log(tracker, dispatcher, domain);
     console.log(`DI works! : ${!!this.ref}\n`);
 

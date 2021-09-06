@@ -4,6 +4,22 @@ export interface IEvent<T> {
   data: T;
 }
 
+export type AllEventTypes =
+  | SlotSet
+  | AllSlotsReset
+  | ReminderScheduled
+  | ReminderCancelled
+  | ConversationPaused
+  | ConversationResumed
+  | FollowupAction
+  | UserUtteranceReverted
+  | ActionReverted
+  | Restarted
+  | SessionStarted
+  | UserUttered
+  | BotUttered
+  | ActionExecuted;
+
 /**
  * https://rasa.com/docs/action-server/sdk-events#slotset
  */
@@ -148,13 +164,13 @@ export interface IRestarted {
 /**
  * https://rasa.com/docs/action-server/sdk-events#sessionstarted
  */
-export class SessionStarted implements IEvent<ISessionRestarted> {
-  constructor(readonly data: ISessionRestarted) {
+export class SessionStarted implements IEvent<ISessionStarted> {
+  constructor(readonly data: ISessionStarted) {
     //
   }
 }
 
-export interface ISessionRestarted {
+export interface ISessionStarted {
   timestamp?: number;
 }
 
