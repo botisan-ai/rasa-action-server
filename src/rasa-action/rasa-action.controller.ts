@@ -16,7 +16,7 @@ export function getControllerClass(path: string): Type {
     }
 
     @Post([path])
-    async getSomething(@Req() req: Request, @Res() res: Response) {
+    async executeAction(@Req() req: Request, @Res() res: Response) {
       const lc = new Lifecycle({
         actionFactory: (target) => this.ref.get(target)
       });
