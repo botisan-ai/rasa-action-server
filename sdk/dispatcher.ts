@@ -1,8 +1,13 @@
 export class ActionDispatcher implements IActionDispatcher {
-  public readonly messages: any[] = [];
+  private readonly _messages: any[] = [];
+
+  public get messages() {
+    // Return a deep clone to prevent mutations.
+    return JSON.parse(JSON.stringify(this._messages));
+  }
 
   utterMessage(message: UtterMessage): void {
-    this.messages.push(message);
+    this._messages.push(message);
   }
 }
 
