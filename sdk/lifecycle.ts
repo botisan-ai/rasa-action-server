@@ -40,7 +40,10 @@ export class Lifecycle {
       // Execute side effects.
       const events = (await action.run(_tracker, _dispatcher, _domain)) || [];
       const responses = _dispatcher.messages;
-      res.status(200).json({ events, responses });
+      res.status(200).json({
+        responses,
+        events: events.map((e) => ({ ...e.data, event: e.event })),
+      });
       //
     } catch (e) {
       if (e instanceof ActionRejectedError) {

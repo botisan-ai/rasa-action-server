@@ -10,6 +10,9 @@ export class ActionNotFoundError extends Error {
   }
 }
 
+/**
+ * Action is not valid for further processing.
+ */
 export class ActionRejectedError extends Error {
   constructor(readonly message: string) {
     super(message);

@@ -6,7 +6,7 @@ export class ActionDomain implements IActionDomain {
   }
 
   public get() {
-    return this.payload;
+    return JSON.parse(JSON.stringify(this.payload));
   }
 }
 

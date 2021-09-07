@@ -3,7 +3,7 @@ import { IConstructor } from './class';
 import { IActionDispatcher } from './dispatcher';
 import { IActionTracker } from './tracker';
 import { IActionDomain } from './domain';
-import { AllEventTypes, IEvent } from './events';
+import { EventType } from './events';
 
 /**
  * Class decorator to mark a class as a Rasa Action
@@ -30,7 +30,7 @@ export interface IActionOptions {
  * A runnable action definition.
  */
 export interface IRunnableAction {
-  run(tracker: IActionTracker, dispatcher: IActionDispatcher, domain: IActionDomain): Promise<AllEventTypes[] | void>;
+  run(tracker: IActionTracker, dispatcher: IActionDispatcher, domain: IActionDomain): Promise<EventType[] | void>;
 }
 
 export interface IAction {
