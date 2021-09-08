@@ -1,7 +1,7 @@
 import { DynamicModule, Module } from '@nestjs/common';
 
-import { IConstructor } from '../../sdk/class';
-import { IRunnableAction } from '../../sdk';
+import { IConstructor } from '@xanthous/rasa-sdk/dist/class';
+import { IRunnableAction } from '@xanthous/rasa-sdk';
 import { getControllerClass } from './rasa-action.controller';
 
 @Module({})

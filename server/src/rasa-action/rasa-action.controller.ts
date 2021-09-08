@@ -2,7 +2,7 @@ import { Controller, Post, Req, Res, Type } from "@nestjs/common";
 import { Request, Response } from "express";
 import { ModuleRef } from "@nestjs/core";
 
-import { Lifecycle } from "../../sdk";
+import { Lifecycle } from "@xanthous/rasa-sdk";
 
 /**
  * Create controller with a dynamic path.

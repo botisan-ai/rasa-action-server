@@ -35,13 +35,13 @@ export class ActionTracker implements IActionTracker {
 
   eventsAfterLatestRestart(): any[] {
     const events = this.currentState().events;
-    const idx = events.reduce((acc, e, idx) => (e.event === 'restart' ? idx : e), -1);
+    const idx = events.reduce((_, e, idx) => (e.event === 'restart' ? idx : e), -1);
     return this.currentState().events.slice(idx);
   }
 
   getLatestInputChannel(): string | void {
     const events = this.currentState().events;
-    const idx = events.reduce((acc, e, idx) => (e.event === 'user' ? idx : e), -1);
+    const idx = events.reduce((_, e, idx) => (e.event === 'user' ? idx : e), -1);
     if (idx >= 0) {
       return events[idx].input_channel;
     }
