@@ -4,6 +4,11 @@
     "sdk",
     "server"
   ],
+  "scripts": {
+    "build": "yarn workspaces run build",
+    "build:sdk": "yarn workspace @xanthous/rasa-sdk run build",
+    "dev": "yarn workspace @xanthous/rasa-action-server run start:dev"
+  },
   "volta": {
     "node": "14.17.6",
     "yarn": "1.22.11"
