@@ -38,7 +38,7 @@ export class Lifecycle {
 
     try {
       // Execute side effects.
-      const events = (await action.run(_tracker, _dispatcher, _domain)) || [];
+      const events = (await action.run(_dispatcher, _tracker, _domain)) || [];
       const responses = _dispatcher.messages;
       res.status(200).json({
         responses,

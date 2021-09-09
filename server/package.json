@@ -4,6 +4,7 @@
   "description": "Rasa TypeScript Action Server",
   "author": "Osman Mesut Ozcan <osman@x-tech.io>",
   "license": "MIT",
+  "main": "dist/index.js",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -23,7 +24,7 @@
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
-    "@xanthous/rasa-sdk": "^0.1.0",
+    "@xanthous/rasa-sdk": "0.1.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"

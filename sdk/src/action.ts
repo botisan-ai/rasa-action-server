@@ -30,7 +30,7 @@ export interface IActionOptions {
  * A runnable action definition.
  */
 export interface IRunnableAction {
-  run(tracker: IActionTracker, dispatcher: IActionDispatcher, domain: IActionDomain): Promise<EventType[] | void>;
+  run(dispatcher: IActionDispatcher, tracker: IActionTracker, domain: IActionDomain): Promise<EventType[] | void>;
 }
 
 export interface IAction {

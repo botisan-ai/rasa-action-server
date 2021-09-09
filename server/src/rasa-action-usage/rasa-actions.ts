@@ -9,7 +9,7 @@ export class HelloAction implements IRunnableAction {
   // Inject module ref to prove Nest Dependency Injection works.
   constructor(private readonly ref: ModuleRef) {}
 
-  async run(tracker: IActionTracker, dispatcher: IActionDispatcher, domain: IActionDomain): Promise<EventType[]> {
+  async run(dispatcher: IActionDispatcher, tracker: IActionTracker, domain: IActionDomain): Promise<EventType[]> {
     console.log(tracker, dispatcher, domain);
     console.log(`DI works! : ${!!this.ref}\n`);
 
