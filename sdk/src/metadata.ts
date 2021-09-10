@@ -18,7 +18,7 @@ class MetadataStorage_ {
     this._actions.set(meta.name, meta);
   }
 
-  public getMetadataByName(name: string): IActionMetadata {
+  public getActionMetadataByName(name: string): IActionMetadata {
     if (!this._actions.has(name)) {
       throw new ActionNotFoundError(name);
     }
