@@ -1,6 +1,6 @@
 {
   "name": "@xanthous/rasa-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Rasa SDK written in TypeScript",
   "author": "Osman Mesut Ozcan <osman@x-tech.io>",
   "license": "MIT",

@@ -1,4 +1,4 @@
-import { IAction, IRunnableAction } from './action';
+import { IActionServerPayload, IRunnableAction } from './action';
 import { ActionDispatcher } from './dispatcher';
 import { ActionRejectedError } from './errors';
 import { MetadataStorage } from './metadata';
@@ -23,7 +23,7 @@ export class Lifecycle {
     this.actionFactory = actionFactory;
   }
 
-  public async execute(req: { body: IAction }, res: any): Promise<void> {
+  public async execute(req: { body: IActionServerPayload }, res: any): Promise<void> {
     const { next_action, tracker, domain } = req.body;
     const actionMetadata = MetadataStorage.getMetadataByName(next_action);
 
@@ -52,6 +52,8 @@ export class Lifecycle {
           action_name: actionMetadata.name,
         });
       }
+
+      console.error(e);
 
       return res.status(500).send(e);
     }

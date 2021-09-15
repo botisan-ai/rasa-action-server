@@ -1,14 +1,14 @@
-import { IAction } from './action';
+import { IActionServerPayload } from './action';
 import { IObjectLiteral } from './class';
 
 const NLU_FALLBACK_INTENT_NAME = 'nlu_fallback';
 
 export class ActionTracker implements IActionTracker {
-  constructor(private readonly payload: IAction['tracker']) {
+  constructor(private readonly payload: IActionServerPayload['tracker']) {
     //
   }
 
-  currentState(): IAction['tracker'] {
+  currentState(): IActionServerPayload['tracker'] {
     // Deep clone the object to prevent mutation.
     return JSON.parse(JSON.stringify(this.payload));
   }
@@ -22,6 +22,12 @@ export class ActionTracker implements IActionTracker {
     if (Object.keys(slots).some((k) => key === k)) {
       return slots[key];
     }
+  }
+
+  addSlot(key: string, value: any): void {
+    // TODO: implement
+    console.log(key, value);
+    return;
   }
 
   getLatestEntityValues(entityType: string, entityRole?: string, entityGroup?: string): any[] {
@@ -75,7 +81,7 @@ export interface IActionTracker {
   /**
    * https://rasa.com/docs/action-server/sdk-tracker#trackercurrent_state
    */
-  currentState(): IAction['tracker'];
+  currentState(): IActionServerPayload['tracker'];
 
   /**
    * https://rasa.com/docs/action-server/sdk-tracker#trackeris_paused
@@ -101,6 +107,8 @@ export interface IActionTracker {
    * https://rasa.com/docs/action-server/sdk-tracker#trackerget_slot
    */
   getSlot(key: string): any | void;
+
+  addSlot(key: string, value: any): void;
 
   /**
    * https://rasa.com/docs/action-server/sdk-tracker#trackerget_intent_of_latest_message

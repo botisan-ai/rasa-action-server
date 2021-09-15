@@ -33,7 +33,7 @@ export interface IRunnableAction {
   run(dispatcher: IActionDispatcher, tracker: IActionTracker, domain: IActionDomain): Promise<EventType[] | void>;
 }
 
-export interface IAction {
+export interface IActionServerPayload {
   version: string;
   sender_id: string;
   next_action: string;

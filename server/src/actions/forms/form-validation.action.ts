@@ -1,7 +1,4 @@
-import { IActionDispatcher, IActionDomain, IActionTracker, IRunnableAction } from '@xanthous/rasa-sdk';
-import { IConstructor } from '@xanthous/rasa-sdk/dist/class';
-import { MetadataStorage } from '@xanthous/rasa-sdk/dist/metadata';
-import { EventType } from '@xanthous/rasa-sdk/dist/events';
+import { IActionDispatcher, IActionDomain, IActionTracker, IConstructor, IRunnableAction, MetadataStorage, EventType } from '@xanthous/rasa-sdk';
 
 export abstract class FormValidationAction implements IRunnableAction {
   private validatorMethods = new Map<string, string | symbol>();
