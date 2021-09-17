@@ -39,9 +39,9 @@ export interface IActionServerPayload {
   next_action: string;
 
   tracker: {
-    paused: false;
+    paused: boolean;
     sender_id: string;
-    latest_event_time: 0;
+    latest_event_time: number | null;
     followup_action: null;
     latest_action_name: string;
     latest_input_channel: string;
