@@ -1,7 +1,7 @@
-import { IAction } from './action';
+import { IActionServerPayload } from './action';
 
 export class ActionDomain implements IActionDomain {
-  constructor(private readonly payload: IAction['domain']) {
+  constructor(private readonly payload: IActionServerPayload['domain']) {
     //
   }
 

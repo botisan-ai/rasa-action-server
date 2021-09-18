@@ -1,9 +1,11 @@
 export * from './action';
 export * from './lifecycle';
+export * from './utterance';
 export { IActionDomain } from './domain';
 export { IActionTracker } from './tracker';
 export { ActionRejectedError } from './errors';
 export { IActionDispatcher } from './dispatcher';
+export { INLGResponder } from './nlg';
 
 export {
   IEvent,
@@ -41,7 +43,7 @@ import {
 } from './events';
 
 // Re-export separately for a better user exp.
-export const events = {
+export const Events = {
   SlotSet,
   Restarted,
   UserUttered,
@@ -57,3 +59,7 @@ export const events = {
   SessionStarted,
   ReminderScheduled,
 };
+
+export { EventType } from './events';
+export { IConstructor } from './class';
+export { MetadataStorage } from './metadata';

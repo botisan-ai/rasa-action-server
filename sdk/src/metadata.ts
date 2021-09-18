@@ -18,12 +18,22 @@ class MetadataStorage_ {
     this._actions.set(meta.name, meta);
   }
 
-  public getMetadataByName(name: string): IActionMetadata {
+  public getActionMetadataByName(name: string): IActionMetadata {
     if (!this._actions.has(name)) {
       throw new ActionNotFoundError(name);
     }
 
     return this._actions.get(name);
+  }
+
+  public getMetadataByDecorator(decorator: IConstructor<IRunnableAction>): IActionMetadata {
+    for (const meta of this._actions.values()) {
+      if (meta.target === decorator) {
+        return meta;
+      }
+    }
+
+    throw new ActionNotFoundError(decorator.name);
   }
 }
 

@@ -1,7 +1,7 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: 'server/tsconfig.json',
+    project: 'tsconfig.json',
     sourceType: 'module',
   },
   settings: {},
@@ -20,6 +20,5 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/no-namespace': 'off',
-    'prettier/prettier': 'off',
   },
 };
