@@ -1,9 +1,11 @@
 export * from './action';
 export * from './lifecycle';
+export * from './utterance';
 export { IActionDomain } from './domain';
 export { IActionTracker } from './tracker';
 export { ActionRejectedError } from './errors';
 export { IActionDispatcher } from './dispatcher';
+export { INLGResponder } from './nlg';
 
 export {
   IEvent,

@@ -1,6 +1,6 @@
 {
   "name": "@xanthous/rasa-action-server",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Rasa TypeScript Action Server",
   "author": "Osman Mesut Ozcan <osman@x-tech.io>",
   "license": "MIT",
