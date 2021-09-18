@@ -43,7 +43,7 @@ import {
 } from './events';
 
 // Re-export separately for a better user exp.
-export const events = {
+export const Events = {
   SlotSet,
   Restarted,
   UserUttered,
@@ -59,3 +59,7 @@ export const events = {
   SessionStarted,
   ReminderScheduled,
 };
+
+export { EventType } from './events';
+export { IConstructor } from './class';
+export { MetadataStorage } from './metadata';

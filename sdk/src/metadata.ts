@@ -25,6 +25,16 @@ class MetadataStorage_ {
 
     return this._actions.get(name);
   }
+
+  public getMetadataByDecorator(decorator: IConstructor<IRunnableAction>): IActionMetadata {
+    for (const meta of this._actions.values()) {
+      if (meta.target === decorator) {
+        return meta;
+      }
+    }
+
+    throw new ActionNotFoundError(decorator.name);
+  }
 }
 
 export const MetadataStorage = new MetadataStorage_();

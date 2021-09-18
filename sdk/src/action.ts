@@ -30,18 +30,18 @@ export interface IActionOptions {
  * A runnable action definition.
  */
 export interface IRunnableAction {
-  run(tracker: IActionTracker, dispatcher: IActionDispatcher, domain: IActionDomain): Promise<EventType[] | void>;
+  run(dispatcher: IActionDispatcher, tracker: IActionTracker, domain: IActionDomain): Promise<EventType[] | void>;
 }
 
-export interface IAction {
+export interface IActionServerPayload {
   version: string;
   sender_id: string;
   next_action: string;
 
   tracker: {
-    paused: false;
+    paused: boolean;
     sender_id: string;
-    latest_event_time: 0;
+    latest_event_time: number | null;
     followup_action: null;
     latest_action_name: string;
     latest_input_channel: string;

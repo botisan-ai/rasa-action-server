@@ -1,6 +1,5 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { INLGResponder } from '@xanthous/rasa-sdk';
-import { IConstructor } from '@xanthous/rasa-sdk/dist/class';
+import { IConstructor, INLGResponder } from '@xanthous/rasa-sdk';
 import { getControllerClass } from './rasa-nlg.controller';
 import { RASA_NLG_RESPONDER } from './tokens';
 
