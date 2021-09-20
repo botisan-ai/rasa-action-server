@@ -111,7 +111,7 @@ export class ActionTracker implements IActionTracker {
     return highestIntentRanking.name;
   }
 
-  clone(): ActionTracker {
+  clone(): IActionTracker {
     return new ActionTracker(this.currentState());
   }
 
@@ -175,7 +175,7 @@ export interface IActionTracker {
    */
   getIntentOfTheLastMessage(skipFallbackIntent?: boolean): string | void;
 
-  clone(): ActionTracker;
+  clone(): IActionTracker;
 
   slotsToValidate(): IObjectLiteral;
 }
