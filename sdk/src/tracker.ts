@@ -77,24 +77,28 @@ export class ActionTracker implements IActionTracker {
       (latest: number, e: IObjectLiteral, i: number) => e.event === 'restart' ? i + 1 : latest,
       0,
     );
-    return this.currentState().events.slice(idx);
+    return this.events.slice(idx);
   }
 
-  getLatestInputChannel(): string | void {
-    const events = this.currentState().events;
-    const idx = events.reduce((_, e, idx) => (e.event === 'user' ? idx : e), -1);
+  getLatestInputChannel(): string | null {
+    const idx: number = this.events.reduce(
+      (latest: number, e: IObjectLiteral, i: number) => e.event === 'user' ? i : latest,
+      -1,
+    );
+
     if (idx >= 0) {
-      return events[idx].input_channel;
+      return this.events[idx].input_channel;
     }
+
+    return null;
   }
 
   getIntentOfTheLastMessage(skipFallbackIntent = true): string | undefined {
-    const latestMessage = this.currentState().latest_message;
-    if (!latestMessage) {
+    if (!this.latestMessage) {
       return undefined;
     }
 
-    const intentRanking = latestMessage.intent_ranking;
+    const intentRanking = this.latestMessage.intent_ranking;
     if (!intentRanking) {
       return undefined;
     }
@@ -156,7 +160,7 @@ export interface IActionTracker {
   /**
    * https://rasa.com/docs/action-server/sdk-tracker#trackerget_latest_input_channel
    */
-  getLatestInputChannel(): string | void;
+  getLatestInputChannel(): string | null;
 
   /**
    * https://rasa.com/docs/action-server/sdk-tracker#trackerevents_after_latest_restart
