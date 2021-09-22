@@ -142,6 +142,13 @@ export class ActionTracker implements IActionTracker {
 }
 
 export interface IActionTracker {
+  senderId: string;
+  latestMessage: IObjectLiteral;
+  events: IObjectLiteral[];
+  followupAction: string | undefined;
+  activeLoop: IObjectLiteral;
+  latestActionName: string;
+
   /**
    * https://rasa.com/docs/action-server/sdk-tracker#trackercurrent_state
    */
