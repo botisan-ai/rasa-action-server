@@ -1,5 +1,6 @@
 import { IActionServerPayload } from './action';
 import { IObjectLiteral } from './class';
+import { SlotSet } from './events';
 
 const NLU_FALLBACK_INTENT_NAME = 'nlu_fallback';
 
@@ -7,7 +8,10 @@ export class ActionTracker implements IActionTracker {
   public readonly senderId: string;
   private slots: IObjectLiteral;
   public readonly latestMessage: IObjectLiteral;
+
+  // TODO: should use EventType[]
   public readonly events: IObjectLiteral[];
+
   private paused: boolean;
   public readonly followupAction: string | undefined;
   public readonly activeLoop: IObjectLiteral;
@@ -18,6 +22,7 @@ export class ActionTracker implements IActionTracker {
     this.senderId = payload.sender_id;
     this.slots = payload.slots;
     this.latestMessage = payload.latest_message || {};
+    // TODO: do type conversion on the event classes
     this.events = payload.events;
     this.paused = payload.paused;
     this.followupAction = payload.followup_action;
@@ -38,6 +43,7 @@ export class ActionTracker implements IActionTracker {
       latest_message: this.latestMessage,
       latest_event_time: latestEventTime,
       paused: this.isPaused(),
+      // TODO: do type conversion on the event classes
       events: this.events,
       latest_input_channel: this.getLatestInputChannel(),
       active_loop: this.activeLoop,
@@ -61,6 +67,11 @@ export class ActionTracker implements IActionTracker {
   // TODO: official SDK is addSlots, but we are doing addSlot
   addSlot(key: string, value: any): void {
     this.slots[key] = value;
+    // TODO: should not do type conversion here
+    this.events.push(new SlotSet({
+      key,
+      value,
+    }).toObject());
   }
 
   getLatestEntityValues(entityType: string, entityRole?: string, entityGroup?: string): any[] {
@@ -73,6 +84,7 @@ export class ActionTracker implements IActionTracker {
   }
 
   eventsAfterLatestRestart(): any[] {
+    // TODO: should use EventType check
     const idx: number = this.events.reduce(
       (latest: number, e: IObjectLiteral, i: number) => e.event === 'restart' ? i + 1 : latest,
       0,
@@ -81,6 +93,7 @@ export class ActionTracker implements IActionTracker {
   }
 
   getLatestInputChannel(): string | null {
+    // TODO: should use EventType check
     const idx: number = this.events.reduce(
       (latest: number, e: IObjectLiteral, i: number) => e.event === 'user' ? i : latest,
       -1,
@@ -125,6 +138,7 @@ export class ActionTracker implements IActionTracker {
     // shallow copy should be enough here
     const reversedEvents = this.events.slice().reverse();
 
+    // TODO: should use EventType check
     for (const event of reversedEvents) {
       if (event.event === 'slot') {
         slotValues[event.name] = event.value;

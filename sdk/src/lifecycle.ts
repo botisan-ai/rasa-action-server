@@ -6,6 +6,7 @@ import { ActionTracker } from './tracker';
 import { ActionDomain } from './domain';
 import { IConstructor, IObjectLiteral } from './class';
 import { INLGResponder } from './nlg';
+import { EventType } from './events';
 
 export type FactoryFNType<T> = (target?: IConstructor<T>) => T;
 
@@ -52,7 +53,7 @@ export class Lifecycle {
       const responses = _dispatcher.messages;
       res.status(200).json({
         responses,
-        events: events.map((e) => ({ ...e.data, event: e.event })),
+        events: events.map((e: EventType) => e.toObject()),
       });
       //
     } catch (e) {

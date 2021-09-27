@@ -3,6 +3,8 @@ import { IObjectLiteral } from './class';
 export interface IEvent {
   event: string;
   data: any;
+
+  toObject(): IObjectLiteral;
 }
 
 export type EventType =
@@ -21,15 +23,28 @@ export type EventType =
   | BotUttered
   | ActionExecuted;
 
+abstract class AbstractEvent implements IEvent {
+  event: string;
+  data: any;
+
+  toObject(): IObjectLiteral {
+    return {
+      ...this.data,
+      event: this.event,
+    }
+  }
+}
+
 /**
  * https://rasa.com/docs/action-server/sdk-events#slotset
  */
-export class SlotSet implements IEvent {
+export class SlotSet extends AbstractEvent implements IEvent {
   event = 'slot';
 
   readonly data: any;
 
   constructor(data: ISlotSet) {
+    super();
     this.data = {
       name: data.key,
       value: data.value,
@@ -40,18 +55,18 @@ export class SlotSet implements IEvent {
 
 export interface ISlotSet {
   key: string;
-  value?: string;
+  value?: any;
   timestamp?: number;
 }
 
 /**
  * https://rasa.com/docs/action-server/sdk-events#allslotsreset
  */
-export class AllSlotsReset implements IEvent {
+export class AllSlotsReset extends AbstractEvent implements IEvent {
   event = 'reset_slots';
 
   constructor(readonly data: IAllSlotsReset) {
-    //
+    super();
   }
 }
 
@@ -62,12 +77,13 @@ export interface IAllSlotsReset {
 /**
  * https://rasa.com/docs/action-server/sdk-events#reminderscheduled
  */
-export class ReminderScheduled implements IEvent {
+export class ReminderScheduled extends AbstractEvent implements IEvent {
   event = 'reminder';
 
   readonly data: any;
 
   constructor(data: IReminderScheduled) {
+    super();
     this.data = {
       name: data.name,
       entities: data.entities,
@@ -91,12 +107,13 @@ export interface IReminderScheduled {
 /**
  * https://rasa.com/docs/action-server/sdk-events#remindercancelled
  */
-export class ReminderCancelled implements IEvent {
+export class ReminderCancelled extends AbstractEvent implements IEvent {
   event = 'cancel_reminder';
 
   readonly data: any;
 
   constructor(data: IReminderCancelled) {
+    super();
     this.data = {
       name: data.name,
       entities: data.entities,
@@ -116,11 +133,11 @@ export interface IReminderCancelled {
 /**
  * https://rasa.com/docs/action-server/sdk-events#conversationpaused
  */
-export class ConversationPaused implements IEvent {
+export class ConversationPaused extends AbstractEvent implements IEvent {
   event = 'pause';
 
   constructor(readonly data: IConversationPaused) {
-    //
+    super();
   }
 }
 
@@ -131,11 +148,11 @@ export interface IConversationPaused {
 /**
  * https://rasa.com/docs/action-server/sdk-events#conversationresumed
  */
-export class ConversationResumed implements IEvent {
+export class ConversationResumed extends AbstractEvent implements IEvent {
   event = 'resume';
 
   constructor(readonly data: IConversationResumed) {
-    //
+    super();
   }
 }
 
@@ -146,11 +163,11 @@ export interface IConversationResumed {
 /**
  * https://rasa.com/docs/action-server/sdk-events#followupaction
  */
-export class FollowupAction implements IEvent {
+export class FollowupAction extends AbstractEvent implements IEvent {
   event = 'followup';
 
   constructor(readonly data: IFollowupAction) {
-    //
+    super();
   }
 }
 
@@ -162,11 +179,11 @@ export interface IFollowupAction {
 /**
  * https://rasa.com/docs/action-server/sdk-events#userutterancereverted
  */
-export class UserUtteranceReverted implements IEvent {
+export class UserUtteranceReverted extends AbstractEvent implements IEvent {
   event = 'rewind';
 
   constructor(readonly data: IUserUtteranceReverted) {
-    //
+    super();
   }
 }
 
@@ -177,11 +194,11 @@ export interface IUserUtteranceReverted {
 /**
  * https://rasa.com/docs/action-server/sdk-events#actionreverted
  */
-export class ActionReverted implements IEvent {
+export class ActionReverted extends AbstractEvent implements IEvent {
   event = 'undo';
 
   constructor(readonly data: IActionReverted) {
-    //
+    super();
   }
 }
 
@@ -192,11 +209,11 @@ export interface IActionReverted {
 /**
  * https://rasa.com/docs/action-server/sdk-events#restarted
  */
-export class Restarted implements IEvent {
+export class Restarted extends AbstractEvent implements IEvent {
   event = 'restart';
 
   constructor(readonly data: IRestarted) {
-    //
+    super();
   }
 }
 
@@ -207,11 +224,11 @@ export interface IRestarted {
 /**
  * https://rasa.com/docs/action-server/sdk-events#sessionstarted
  */
-export class SessionStarted implements IEvent {
+export class SessionStarted extends AbstractEvent implements IEvent {
   event = 'session_start';
 
   constructor(readonly data: ISessionStarted) {
-    //
+    super();
   }
 }
 
@@ -222,11 +239,11 @@ export interface ISessionStarted {
 /**
  * https://rasa.com/docs/action-server/sdk-events#useruttered
  */
-export class UserUttered implements IEvent {
+export class UserUttered extends AbstractEvent implements IEvent {
   event = 'user';
 
   constructor(readonly data: IUserUttered) {
-    //
+    super();
   }
 }
 
@@ -240,11 +257,11 @@ export interface IUserUttered {
 /**
  * https://rasa.com/docs/action-server/sdk-events#botuttered
  */
-export class BotUttered implements IEvent {
+export class BotUttered extends AbstractEvent implements IEvent {
   event = 'bot';
 
   constructor(readonly data: IBotUttered) {
-    //
+    super();
   }
 }
 
@@ -258,12 +275,13 @@ export interface IBotUttered {
 /**
  * https://rasa.com/docs/action-server/sdk-events#actionexecuted
  */
-export class ActionExecuted implements IEvent {
+export class ActionExecuted extends AbstractEvent implements IEvent {
   event = 'action';
 
   readonly data: any;
 
   constructor(data: IActionExecuted) {
+    super();
     this.data = {
       policy: data.policy,
       name: data.action_name,
