@@ -11,6 +11,7 @@ export type UtterMessageType =
   | 'attachment'
   | 'buttons'
   | 'elements'
+  | 'custom'
   | string;
 
 export type UtterMessage = {

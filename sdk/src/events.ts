@@ -1,10 +1,9 @@
+import { plainToClass } from 'class-transformer';
 import { IObjectLiteral } from './class';
 
 export interface IEvent {
   event: string;
-  data: any;
-
-  toObject(): IObjectLiteral;
+  timestamp: number;
 }
 
 export type EventType =
@@ -21,35 +20,39 @@ export type EventType =
   | SessionStarted
   | UserUttered
   | BotUttered
-  | ActionExecuted;
+  | ActionExecuted
+  | ActiveLoop
+  | UserFeaturization;
 
-abstract class AbstractEvent implements IEvent {
-  event: string;
-  data: any;
+class AbstractEvent implements IEvent {
+  public event: string;
+  public timestamp: number;
 
-  toObject(): IObjectLiteral {
-    return {
-      ...this.data,
-      event: this.event,
-    }
+  constructor(event: string) {
+    this.event = event;
+    // unix epoch seconds
+    this.timestamp = new Date().getTime() / 1000;
   }
 }
 
 /**
  * https://rasa.com/docs/action-server/sdk-events#slotset
  */
-export class SlotSet extends AbstractEvent implements IEvent {
-  event = 'slot';
-
-  readonly data: any;
+export class SlotSet extends AbstractEvent {
+  public name: string;
+  public value: any;
 
   constructor(data: ISlotSet) {
-    super();
-    this.data = {
-      name: data.key,
-      value: data.value,
-      timestamp: data.timestamp,
-    };
+    super('slot');
+    if (!data) {
+      return;
+    }
+    this.name = data.key;
+    this.value = data.value;
+
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
   }
 }
 
@@ -63,35 +66,49 @@ export interface ISlotSet {
  * https://rasa.com/docs/action-server/sdk-events#allslotsreset
  */
 export class AllSlotsReset extends AbstractEvent implements IEvent {
-  event = 'reset_slots';
-
   constructor(readonly data: IAllSlotsReset) {
-    super();
+    super('reset_slots');
+
+    if (!data) {
+      return;
+    }
+
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
   }
 }
 
 export interface IAllSlotsReset {
-  timestamp: number;
+  timestamp?: number;
 }
 
 /**
  * https://rasa.com/docs/action-server/sdk-events#reminderscheduled
  */
 export class ReminderScheduled extends AbstractEvent implements IEvent {
-  event = 'reminder';
-
-  readonly data: any;
+  public name?: string;
+  public entities?: IObjectLiteral | IObjectLiteral<string>;
+  public intent: string;
+  public date_time: string;
+  public kill_on_user_msg: boolean;
 
   constructor(data: IReminderScheduled) {
-    super();
-    this.data = {
-      name: data.name,
-      entities: data.entities,
-      intent: data.intent_name,
-      timestamp: data.timestamp,
-      date_time: data.trigger_date_time.toISOString(),
-      kill_on_user_msg: data.kill_on_user_message,
-    };
+    super('reminder');
+
+    if (!data) {
+      return;
+    }
+
+    this.name = data.name;
+    this.entities = data.entities;
+    this.intent = data.intent_name;
+    this.date_time = data.trigger_date_time.toISOString();
+    this.kill_on_user_msg = data.kill_on_user_message;
+
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
   }
 }
 
@@ -108,18 +125,24 @@ export interface IReminderScheduled {
  * https://rasa.com/docs/action-server/sdk-events#remindercancelled
  */
 export class ReminderCancelled extends AbstractEvent implements IEvent {
-  event = 'cancel_reminder';
-
-  readonly data: any;
+  public name?: string;
+  public intent?: string;
+  public entities?: IObjectLiteral | IObjectLiteral<string>;
 
   constructor(data: IReminderCancelled) {
-    super();
-    this.data = {
-      name: data.name,
-      entities: data.entities,
-      intent: data.intent_name,
-      timestamp: data.timestamp,
-    };
+    super('cancel_reminder');
+
+    if (!data) {
+      return;
+    }
+
+    this.name = data.name;
+    this.entities = data.entities;
+    this.intent = data.intent_name;
+
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
   }
 }
 
@@ -134,10 +157,16 @@ export interface IReminderCancelled {
  * https://rasa.com/docs/action-server/sdk-events#conversationpaused
  */
 export class ConversationPaused extends AbstractEvent implements IEvent {
-  event = 'pause';
-
   constructor(readonly data: IConversationPaused) {
-    super();
+    super('pause');
+
+    if (!data) {
+      return;
+    }
+
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
   }
 }
 
@@ -149,10 +178,16 @@ export interface IConversationPaused {
  * https://rasa.com/docs/action-server/sdk-events#conversationresumed
  */
 export class ConversationResumed extends AbstractEvent implements IEvent {
-  event = 'resume';
-
   constructor(readonly data: IConversationResumed) {
-    super();
+    super('resume');
+
+    if (!data) {
+      return;
+    }
+
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
   }
 }
 
@@ -164,10 +199,20 @@ export interface IConversationResumed {
  * https://rasa.com/docs/action-server/sdk-events#followupaction
  */
 export class FollowupAction extends AbstractEvent implements IEvent {
-  event = 'followup';
+  public name: string;
 
   constructor(readonly data: IFollowupAction) {
-    super();
+    super('followup');
+
+    if (!data) {
+      return;
+    }
+
+    this.name = data.name;
+
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
   }
 }
 
@@ -180,10 +225,16 @@ export interface IFollowupAction {
  * https://rasa.com/docs/action-server/sdk-events#userutterancereverted
  */
 export class UserUtteranceReverted extends AbstractEvent implements IEvent {
-  event = 'rewind';
-
   constructor(readonly data: IUserUtteranceReverted) {
-    super();
+    super('rewind');
+
+    if (!data) {
+      return;
+    }
+
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
   }
 }
 
@@ -195,10 +246,16 @@ export interface IUserUtteranceReverted {
  * https://rasa.com/docs/action-server/sdk-events#actionreverted
  */
 export class ActionReverted extends AbstractEvent implements IEvent {
-  event = 'undo';
-
   constructor(readonly data: IActionReverted) {
-    super();
+    super('undo');
+
+    if (!data) {
+      return;
+    }
+
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
   }
 }
 
@@ -210,10 +267,16 @@ export interface IActionReverted {
  * https://rasa.com/docs/action-server/sdk-events#restarted
  */
 export class Restarted extends AbstractEvent implements IEvent {
-  event = 'restart';
-
   constructor(readonly data: IRestarted) {
-    super();
+    super('restart');
+
+    if (!data) {
+      return;
+    }
+
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
   }
 }
 
@@ -225,10 +288,16 @@ export interface IRestarted {
  * https://rasa.com/docs/action-server/sdk-events#sessionstarted
  */
 export class SessionStarted extends AbstractEvent implements IEvent {
-  event = 'session_start';
-
   constructor(readonly data: ISessionStarted) {
-    super();
+    super('session_start');
+
+    if (!data) {
+      return;
+    }
+
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
   }
 }
 
@@ -238,12 +307,19 @@ export interface ISessionStarted {
 
 /**
  * https://rasa.com/docs/action-server/sdk-events#useruttered
+ * TODO
  */
 export class UserUttered extends AbstractEvent implements IEvent {
-  event = 'user';
-
   constructor(readonly data: IUserUttered) {
-    super();
+    super('user');
+
+    if (!data) {
+      return;
+    }
+
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
   }
 }
 
@@ -256,12 +332,19 @@ export interface IUserUttered {
 
 /**
  * https://rasa.com/docs/action-server/sdk-events#botuttered
+ * TODO
  */
 export class BotUttered extends AbstractEvent implements IEvent {
-  event = 'bot';
-
   constructor(readonly data: IBotUttered) {
-    super();
+    super('bot');
+
+    if (!data) {
+      return;
+    }
+
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
   }
 }
 
@@ -276,18 +359,23 @@ export interface IBotUttered {
  * https://rasa.com/docs/action-server/sdk-events#actionexecuted
  */
 export class ActionExecuted extends AbstractEvent implements IEvent {
-  event = 'action';
-
-  readonly data: any;
+  public name: string;
+  public policy?: any;
+  public confidence?: number;
 
   constructor(data: IActionExecuted) {
-    super();
-    this.data = {
-      policy: data.policy,
-      name: data.action_name,
-      timestamp: data.timestamp,
-      confidence: data.confidence,
-    };
+    super('action');
+
+    if (!data) {
+      return;
+    }
+
+    this.name = data.action_name;
+    this.policy = data.policy;
+    this.confidence = data.confidence;
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
   }
 }
 
@@ -296,4 +384,88 @@ export interface IActionExecuted {
   policy?: any;
   confidence?: number;
   timestamp?: number;
+}
+
+export class ActiveLoop extends AbstractEvent implements IEvent {
+  public name: string | null;
+
+  constructor(data: IActiveLoop) {
+    super('active_loop');
+
+    if (!data) {
+      return;
+    }
+
+    this.name = data.name;
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
+  }
+}
+
+export interface IActiveLoop {
+  name: string | null;
+  timestamp?: number;
+}
+
+export class UserFeaturization extends AbstractEvent implements IEvent {
+  public use_text_for_featurization?: boolean;
+
+  constructor(data: IUserFeaturization) {
+    super('user_featurization');
+
+    if (!data) {
+      return;
+    }
+
+    this.use_text_for_featurization = data.use_text_for_featurization;
+
+    if (data.timestamp) {
+      this.timestamp = data.timestamp;
+    }
+  }
+}
+
+export interface IUserFeaturization {
+  use_text_for_featurization?: boolean;
+  timestamp?: number;
+}
+
+export function convertToEventClass(obj: any): EventType {
+  switch (obj.event) {
+    case 'slot':
+      return plainToClass(SlotSet, obj) as unknown as EventType;
+    case 'reset_slots':
+      return plainToClass(AllSlotsReset, obj) as unknown as EventType;
+    case 'reminder':
+      return plainToClass(ReminderScheduled, obj) as unknown as EventType;
+    case 'cancel_reminder':
+      return plainToClass(ReminderCancelled, obj) as unknown as EventType;
+    case 'pause':
+      return plainToClass(ConversationPaused, obj) as unknown as EventType;
+    case 'resume':
+      return plainToClass(ConversationResumed, obj) as unknown as EventType;
+    case 'followup':
+      return plainToClass(FollowupAction, obj) as unknown as EventType;
+    case 'rewind':
+      return plainToClass(UserUtteranceReverted, obj) as unknown as EventType;
+    case 'undo':
+      return plainToClass(ActionReverted, obj) as unknown as EventType;
+    case 'restart':
+      return plainToClass(Restarted, obj) as unknown as EventType;
+    case 'session_started':
+      return plainToClass(SessionStarted, obj) as unknown as EventType;
+    case 'user':
+      return plainToClass(UserUttered, obj) as unknown as EventType;
+    case 'bot':
+      return plainToClass(BotUttered, obj) as unknown as EventType;
+    case 'action':
+      return plainToClass(ActionExecuted, obj) as unknown as EventType;
+    case 'active_loop':
+      return plainToClass(ActiveLoop, obj) as unknown as EventType;
+    case 'user_featurization':
+      return plainToClass(UserFeaturization, obj) as unknown as EventType;
+    default:
+      throw new Error(`unknown action: ${obj.event}`);
+  }
 }

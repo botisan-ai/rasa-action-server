@@ -1,3 +1,4 @@
+import { classToPlain } from 'class-transformer';
 import { IActionServerPayload, IRunnableAction } from './action';
 import { ActionDispatcher } from './dispatcher';
 import { ActionRejectedError } from './errors';
@@ -53,7 +54,7 @@ export class Lifecycle {
       const responses = _dispatcher.messages;
       res.status(200).json({
         responses,
-        events: events.map((e: EventType) => e.toObject()),
+        events: events.map((e: EventType) => classToPlain(e)),
       });
       //
     } catch (e) {

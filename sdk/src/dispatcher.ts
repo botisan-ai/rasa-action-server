@@ -1,15 +1,10 @@
 import { UtterMessage } from "./utterance";
 
 export class ActionDispatcher implements IActionDispatcher {
-  private readonly _messages: any[] = [];
-
-  public get messages() {
-    // Return a deep clone to prevent mutations.
-    return JSON.parse(JSON.stringify(this._messages));
-  }
+  public messages: UtterMessage[] = [];
 
   utterMessage(message: UtterMessage): void {
-    this._messages.push(message);
+    this.messages.push(message);
   }
 }
 
@@ -19,5 +14,5 @@ export interface IActionDispatcher {
    */
   utterMessage(message: UtterMessage): void;
 
-  messages: any[];
+  messages: UtterMessage[];
 }

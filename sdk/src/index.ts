@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 export * from './action';
 export * from './lifecycle';
 export * from './utterance';
@@ -23,6 +25,8 @@ export {
   IAllSlotsReset,
   ISlotSet,
   IActionReverted,
+  IActiveLoop,
+  IUserFeaturization,
 } from './events';
 
 import {
@@ -40,6 +44,8 @@ import {
   ReminderCancelled,
   SessionStarted,
   ReminderScheduled,
+  ActiveLoop,
+  UserFeaturization,
 } from './events';
 
 // Re-export separately for a better user exp.
@@ -58,6 +64,8 @@ export const Events = {
   ReminderCancelled,
   SessionStarted,
   ReminderScheduled,
+  ActiveLoop,
+  UserFeaturization,
 };
 
 export { EventType } from './events';
