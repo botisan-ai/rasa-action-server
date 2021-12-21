@@ -5,11 +5,11 @@ import { ActionRejectedError } from './errors';
 import { MetadataStorage } from './metadata';
 import { ActionTracker } from './tracker';
 import { ActionDomain } from './domain';
-import { IConstructor, IObjectLiteral } from './class';
+import { IObjectLiteral } from './class';
 import { INLGResponder } from './nlg';
 import { EventType } from './events';
 
-export type FactoryFNType<T> = (target?: IConstructor<T>) => T;
+export type FactoryFNType<T> = (name?: string) => T;
 
 /**
  * @template T type of the managed class
@@ -31,18 +31,26 @@ export interface ILifecycleOptions<T> {
 export class Lifecycle {
   private readonly actionFactory?: FactoryFNType<IRunnableAction>;
 
+  private static DEFAULT_ACTION_FACTORY = (actionName: string) => {
+    const actionMetadata = MetadataStorage.getActionMetadataByName(actionName);
+
+    if (!actionMetadata) {
+      throw new Error(`Action ${actionName} not found.`);
+    }
+
+    return new actionMetadata.target();
+  };
+
   constructor({ actionFactory }: ILifecycleOptions<IRunnableAction> = {}) {
     this.actionFactory = actionFactory;
   }
 
   public async execute(req: { body: IActionServerPayload }, res: any): Promise<void> {
     const { next_action, tracker, domain } = req.body;
-    const actionMetadata = MetadataStorage.getActionMetadataByName(next_action);
 
-    // prettier-ignore
     const action = this.actionFactory
-      ? this.actionFactory(actionMetadata.target)
-      : new actionMetadata.target();
+      ? this.actionFactory(next_action)
+      : Lifecycle.DEFAULT_ACTION_FACTORY(next_action);
 
     const _tracker = new ActionTracker(tracker);
     const _dispatcher = new ActionDispatcher();
@@ -61,7 +69,7 @@ export class Lifecycle {
       if (e instanceof ActionRejectedError) {
         return res.status(400).json({
           error: e.message,
-          action_name: actionMetadata.name,
+          action_name: next_action,
         });
       }
 
