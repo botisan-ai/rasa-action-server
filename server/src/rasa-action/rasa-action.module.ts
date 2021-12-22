@@ -1,17 +1,12 @@
 import { DynamicModule, Module, ModuleMetadata, Provider } from '@nestjs/common';
-import { IConstructor, IRunnableAction } from '@xanthous/rasa-sdk';
+import { IRunnableAction } from '@xanthous/rasa-sdk';
 
 import { getControllerClass } from './rasa-action.controller';
 
 @Module({})
 export class RasaActionModule {
-  static forRoot(actions: IConstructor<IRunnableAction>[], options: ModuleMetadata & IRasaActionModuleOptions): DynamicModule {
+  static forRoot(actionProviders: Provider<IRunnableAction>[], options: ModuleMetadata & IRasaActionModuleOptions): DynamicModule {
     const controller = getControllerClass(options.path);
-
-    const actionProviders: Provider<IRunnableAction>[] = actions.map((action) => ({
-      provide: action,
-      useClass: action,
-    }));
 
     return {
       imports: options.imports,
